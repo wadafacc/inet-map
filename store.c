@@ -10,8 +10,8 @@ FILE *create(char *fname, int idx) {
   return fopen(fullpath, "w");
 }
 
-void write(FILE *ptr, char *str, int res) {
-  fprintf(ptr,"%s=%d\n", str, res);
+void write(FILE *ptr, int ip, int res) {
+  fprintf(ptr,"%d %d\n", ip, res);
 }
 
 void close(FILE *ptr) {

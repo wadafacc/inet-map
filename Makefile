@@ -6,4 +6,4 @@ clean:
 	@rm -rf ./*.o 
 
 clean-data: 
-	@rm -rf ./data/
+	@rm -rf ./data/*

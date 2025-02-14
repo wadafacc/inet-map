@@ -26,7 +26,7 @@ struct icmphdr *ping(int sockfd, struct sockaddr_in *dst) {
 
 /// @brief returns 0 if response isn't code=ICMP_ECHOREPLY && type=ICMP_ECHO 
 struct icmphdr *receive(int sockfd) {
-  unsigned char recv_buf[128];
+  unsigned char recv_buf[1024];
   struct sockaddr_in reply_addr;
   socklen_t addr_len = sizeof(reply_addr);
 
@@ -46,7 +46,7 @@ struct icmphdr *receive(int sockfd) {
   
   printf("ICMP: TYPE: %d, Code: %d, Bytes: %d, IP: %s\n", icmp_reply->type, icmp_reply->code, res, reply_ip);
 
-  if (icmp_reply->code == ICMP_ECHOREPLY && icmp_reply->type == ICMP_ECHO) {
+  if (icmp_reply->code == ICMP_ECHOREPLY) {
     return 1;
   }
 

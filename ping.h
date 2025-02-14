@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <linux/if_packet.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +12,8 @@
 #include <netinet/in.h>
 #include <netinet/ip_icmp.h>
 
-#define PACKET_SIZE 64  // Total packet size (ICMP header + data)
+
+#define PACKET_SIZE 24  // Total packet size (ICMP header + data)
 #define ODDBYTE(v)	(v)
 
 struct icmphdr *ping(int sockfd, struct sockaddr_in *addr);
