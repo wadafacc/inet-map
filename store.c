@@ -3,17 +3,17 @@
 - Write to disk in (fitting) format
 */
 
-FILE *create(char *fname, int idx) {
+FILE *store_create(char *fname, int idx) {
   char fullpath[64];
   sprintf(fullpath, "%s/%d_%s", PATH, idx, fname);
 
   return fopen(fullpath, "w");
 }
 
-void write(FILE *ptr, int ip, int res) {
+void store_write(FILE *ptr, int ip, int res) {
   fprintf(ptr,"%d %d\n", ip, res);
 }
 
-void close(FILE *ptr) {
+void store_close(FILE *ptr) {
   fclose(ptr);
 }

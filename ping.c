@@ -25,7 +25,7 @@ struct icmphdr *ping(int sockfd, struct sockaddr_in *dst) {
 }
 
 /// @brief returns 0 if response isn't code=ICMP_ECHOREPLY && type=ICMP_ECHO 
-struct icmphdr *receive(int sockfd) {
+int receive(int sockfd) {
   unsigned char recv_buf[1024];
   struct sockaddr_in reply_addr;
   socklen_t addr_len = sizeof(reply_addr);

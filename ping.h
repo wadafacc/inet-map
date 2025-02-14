@@ -17,7 +17,7 @@
 #define ODDBYTE(v)	(v)
 
 struct icmphdr *ping(int sockfd, struct sockaddr_in *addr);
-struct icmphdr *receive(int sockfd);
+int receive(int sockfd);
 
 void print(struct sockaddr *sa);
 unsigned short in_cksum(const unsigned short *addr, register int len, unsigned short csum);

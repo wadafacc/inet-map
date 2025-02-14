@@ -19,20 +19,19 @@ int main()
   dst.sin_family = AF_INET;
 
   char buf[16];
-  FILE *file_ptr = create("storage.dat", 0);
-
-  int old = ((0 >> 24) & 0xFF);
-  // for (int i = 0; i < ((uint64_t)1 << 32); i++)
-  for (int i = 2449763866; i < 2449763872; i++)
+  FILE *file_ptr = store_create(FILENAME, 0);
+    
+  int old_oct;
+  for (int i = 0; i < ((uint64_t)1 << 32) ; i++)
   {
-    int first = (i >> 24) & 0xFF;
-    if (first != old)
-    {
-      old = first;
-      close(file_ptr);
-      file_ptr = create("storage.dat", old); // update file pointer to next file in row
+    int new_oct = (i >> 24) & 0xFF;
+    if (new_oct != old_oct) {
+      old_oct = new_oct;
+      store_close(file_ptr);
+      file_ptr = store_create(FILENAME, old_oct); // update file pointer to next file in row
     }
 
+    // bind ip to dst
     int_to_ip(i, buf);
     if (inet_pton(AF_INET, buf, &dst.sin_addr) <= 0)
     {
@@ -48,33 +47,19 @@ int main()
     {
       perror("ping");
       // count as 0
-      write(file_ptr, ipv3, icmp_req);
+      store_write(file_ptr, ipv3, 0);
       continue;
     }
 
-    struct icmphdr *icmp_reply = receive(sockfd);
-    if (icmp_reply == 0) {
-      perror("receive");
-    }
+    int icmp_reply = receive(sockfd);
 
-    write(file_ptr, ipv3, icmp_reply);
+    store_write(file_ptr, ipv3, icmp_reply);
     printf("\n");
   }
 
-  close(file_ptr);
+  store_close(file_ptr);
 }
 
-// start benchmark timer
-// clock_t start_time = clock();
-// int count = 0;
-// while (((double)(clock() - start_time) / CLOCKS_PER_SEC) <= 1)
-// {
-
-//   count++;
-// }
-
-// double elapsed = (double)(clock() - start_time) / CLOCKS_PER_SEC;
-// printf("Took %f seconds | Requests sent: %d\n", elapsed, count);
 
 void int_to_ip(int n, char *buf)
 {
@@ -85,8 +70,6 @@ int ip_to_intv3(char *buf) {
   unsigned int oct[4];
   sscanf(buf, "%u.%u.%u.%u", &oct[0], &oct[1], &oct[2], &oct[3]);
 
-  
-  // to int
   unsigned int res = (oct[1] << 16) | (oct[2] << 8) | oct[3]; 
   printf("IPv3: %u.%u.%u / int: %d\n", oct[1], oct[2], oct[3], res);
   return res;
