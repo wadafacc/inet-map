@@ -21,7 +21,7 @@ int main()
   char buf[16];
   FILE *file_ptr = store_create(FILENAME, 0);
     
-  int old_oct;
+  int old_oct = 0;
   for (int i = 0; i < ((uint64_t)1 << 32) ; i++)
   {
     int new_oct = (i >> 24) & 0xFF;
