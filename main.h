@@ -7,7 +7,6 @@
 #include "store.h"
 
 #define TIMEOUT_DURATION 1000
-#define FILENAME "pingu.dat"
+#define FILENAME "pingu.bin"
 
 void int_to_ip(int n, char *buf);
-int ip_to_intv3(char *buf);

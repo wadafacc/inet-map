@@ -22,7 +22,12 @@ int main()
   FILE *file_ptr = store_create(FILENAME, 0);
     
   int old_oct = 0;
-  for (int i = 0; i < ((uint64_t)1 << 32) ; i++)
+
+  // writing stuff -> storing each IP's availability as a bit
+  unsigned char bit_buf = 0;
+  int bit_count = 0;
+  
+  for (int i = 2549656576; i < 2549656831 + 1; i++)
   {
     int new_oct = (i >> 24) & 0xFF;
     if (new_oct != old_oct) {
@@ -39,23 +44,26 @@ int main()
       exit(EXIT_FAILURE);
     }
 
-    printf("\n -- IP: %s -- \n", buf);
-    int ipv3 = ip_to_intv3(buf);
+    printf("--- %s ---\n", buf);
 
     struct icmphdr *icmp_req = ping(sockfd, &dst);
     if (icmp_req == 0)
     {
       perror("ping");
+
       // count as 0
-      store_write(file_ptr, ipv3, 0);
+      store_write(file_ptr, icmp_req, &bit_buf, &bit_count);
       continue;
     }
 
     int icmp_reply = receive(sockfd);
 
-    store_write(file_ptr, ipv3, icmp_reply);
+    store_write(file_ptr, icmp_reply, &bit_buf, &bit_count);
     printf("\n");
   }
+
+  // make sure to flush
+  store_flush(file_ptr, &bit_buf, &bit_count);
 
   store_close(file_ptr);
 }
@@ -64,13 +72,4 @@ int main()
 void int_to_ip(int n, char *buf)
 {
   sprintf(buf, "%d.%d.%d.%d", ((n >> 24) & 0xFF), ((n >> 16) & 0xFF), ((n >> 8) & 0xFF), (n & 0xFF));
-}
-
-int ip_to_intv3(char *buf) {
-  unsigned int oct[4];
-  sscanf(buf, "%u.%u.%u.%u", &oct[0], &oct[1], &oct[2], &oct[3]);
-
-  unsigned int res = (oct[1] << 16) | (oct[2] << 8) | oct[3]; 
-  printf("IPv3: %u.%u.%u / int: %d\n", oct[1], oct[2], oct[3], res);
-  return res;
 }
