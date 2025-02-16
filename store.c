@@ -3,6 +3,20 @@
 - Write to disk in (fitting) format
 */
 
+void set_bits(int status, unsigned char (*byte_buf), long idx) {
+  int byte_idx = idx / 4;
+  int bit_idx = 6 - ((idx % 8) * 2);  // only use every second bit as first place -> 4 ips per byte
+
+  byte_buf[byte_idx] |= (status << bit_idx);
+
+  printf("Status: %d | Current Byte: ", status);
+  for (int j = 7; j >= 0; j--)
+  {                                  // Loop through each bit in the byte (MSB to LSB)
+    printf("%d", (byte_buf[byte_idx] >> j) & 1); // Extract and print the j-th bit
+  }
+}
+
+
 FILE *store_create(char *fname, int idx) {
   char fullpath[64];
   sprintf(fullpath, "%s/%d_%s", PATH, idx, fname);
@@ -10,23 +24,11 @@ FILE *store_create(char *fname, int idx) {
   return fopen(fullpath, "wb");
 }
 
-void store_write(FILE *ptr, int bit, unsigned char *bit_buf, int *bit_count) {
-  *bit_buf = (*bit_buf << 1) | (bit & 1);
-  (*bit_count)++;
-
-  // full byte to write
-  if (*bit_count == 8) {
-    fwrite(bit_buf, 1, 1, ptr);
-    *bit_buf = 0;
-    *bit_count = 0;
-  }
-}
-
-void store_flush(FILE *ptr, unsigned char *bit_buf, int *bit_count) {
-  if (*bit_count > 0) {
-    *bit_buf <<= (8 - *bit_count);
-    fwrite(bit_buf, 1, 1, ptr);
-  }
+/// @brief  write entire byte buffer to file
+/// @param ptr 
+/// @param byte_buf 
+void store_write(FILE *ptr, unsigned char *byte_buf, size_t size) {
+  fwrite(byte_buf, 1, size, ptr);
 }
 
 void store_close(FILE *ptr) {

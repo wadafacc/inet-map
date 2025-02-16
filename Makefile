@@ -5,5 +5,6 @@ all:
 clean:
 	@rm -rf ./*.o 
 
-clean-data: 
+cleand: 
 	@rm -rf ./data/*
+	@rm -rf ./*.txt

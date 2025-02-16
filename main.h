@@ -10,3 +10,5 @@
 #define FILENAME "pingu.bin"
 
 void int_to_ip(int n, char *buf);
+int ip_to_intv3(char *ip);
+void print_bits(unsigned char *arr, size_t size);
